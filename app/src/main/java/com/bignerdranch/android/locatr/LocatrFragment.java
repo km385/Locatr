@@ -31,6 +31,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,6 +47,7 @@ public class LocatrFragment extends Fragment {
 
     private ImageView mImageView;
     private GoogleApiClient mClient;
+    private CircularProgressIndicator mProgressIndicator;
 
     public static LocatrFragment newInstance() {
         return new LocatrFragment();
@@ -78,6 +80,8 @@ public class LocatrFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_locatr, container, false);
 
         mImageView = (ImageView) v.findViewById(R.id.image);
+        mImageView.setVisibility(View.GONE);
+        mProgressIndicator = (CircularProgressIndicator) v.findViewById(R.id.progress_circular);
 
         return v;
     }
@@ -111,6 +115,7 @@ public class LocatrFragment extends Fragment {
             case R.id.action_locate:
                 if (hasLocationPermission()) {
                     findImage();
+                    mProgressIndicator.setVisibility(View.VISIBLE);
                 } else {
                     if (shouldShowRequestPermissionRationale(LOCATION_PERMISSIONS[0])){
                         new AlertDialog.Builder(requireActivity())
@@ -148,6 +153,7 @@ public class LocatrFragment extends Fragment {
             case REQUEST_LOCATION_PERMISSION:
                 if (hasLocationPermission()) {
                     findImage();
+                    mProgressIndicator.setVisibility(View.VISIBLE);
                 } else {
                     shouldShowRequestPermissionRationale(LOCATION_PERMISSIONS[0]);
                 }
@@ -208,7 +214,9 @@ public class LocatrFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void unused) {
+            mImageView.setVisibility(View.VISIBLE);
             mImageView.setImageBitmap(mBitmap);
+            mProgressIndicator.setVisibility(View.GONE);
         }
     }
 
